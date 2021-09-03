@@ -1,0 +1,123 @@
+<?php
+
+/**
+ * @file
+ * Contains social_community_role.module.
+ */
+
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Database\Query\AlterableInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\block\Entity\Block;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\group\Entity\Group;
+use Drupal\group\Entity\GroupInterface;
+use Drupal\social_group_flexible_group\FlexibleGroupContentVisibilityUpdate;
+use Drupal\views\Plugin\views\query\QueryPluginBase;
+use Drupal\views\Plugin\views\row\EntityRow;
+use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
+use Drupal\Core\Entity\EntityForm;
+
+/*
+function social_community_role_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'form_alter') {
+
+    // Move my_module_form_alter() to the end of the list.
+    // \Drupal::moduleHandler()->getImplementations()
+    // iterates through $implementations with a foreach loop which PHP iterates
+    // in the order that the items were added, so to move an item to the end of
+    // the array, we remove it and then add it.
+    $group = $implementations['social_community_role'];
+    unset($implementations['social_community_role']);
+    $implementations['social_community_role'] = $group;
+  }
+}
+*/
+/**
+ * Provide a description for a given key from the content visibility #options.
+ *
+ * @param string $description
+ *   The descriptive.
+ *
+ * @ingroup social_group_api
+ */
+function social_community_role_social_group_group_visibility_description_alter($key, &$description) {
+  switch ($key) {
+    case 'community_role':
+      $description = '<p><strong><svg class="icon-small"><use xlink:href="#icon-account_circle"></use></svg></strong>';
+      $description .= '<strong>' . t('Community role')->render() . '</strong>';
+      $description .= '-' . t('Only members with a certain role can see it.')->render();
+      $description .= '</p>';
+      break;
+  }
+}
+
+/**
+ * Provide a description for a given key from the content visibility #options.
+ *
+ * @param string $description
+ *   The descriptive.
+ *
+ * @ingroup social_group_api
+ */
+function social_community_role_social_group_content_visibility_description_alter($key, &$description) {
+  switch ($key) {
+    case 'community_role':
+      $description = '<p><strong><svg class="icon-small"><use xlink:href="#icon-account_circle"></use></svg></strong>';
+      $description .= '<strong>' . t('Community role')->render() . '</strong>';
+      $description .= '-' . t('Only members with a certain role can see it.')->render();
+      $description .= '</p>';
+      break;
+  }
+}
+
+/**
+ * Provide a description for a given key from the content visibility #options.
+ *
+ * @param string $description
+ *   The descriptive.
+ *
+ * @ingroup social_group_api
+ */
+function social_community_role_social_group_flexible_group_allowed_visibility_description_alter($key, &$description) {
+  switch ($key) {
+    case 'community_role':
+      $description = '<p><strong><svg class="icon-small"><use xlink:href="#icon-account"></use></svg></strong>';
+      $description .= '<strong>' . t('Community role')->render() . '</strong>';
+      $description .= '-' . t('Only members with a certain role can see it.')->render();
+      $description .= '</p>';
+      break;
+  }
+}
+
+
+/**
+ * Check if community_role is enabled as visibility options.
+ *
+ * @param \Drupal\group\Entity\GroupInterface $group
+ *   The group we are checking.
+ *
+ * @return bool
+ *   TRUE when users can join.
+ */
+function social_community_role_community_role_enabled(GroupInterface $group) {
+  $visibility_options = $group->get('field_group_allowed_visibility')->getValue();
+
+  if (!in_array('community_role', array_column($visibility_options, 'value'), FALSE)) {
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+
+
+
