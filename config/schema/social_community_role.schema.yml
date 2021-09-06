@@ -1,0 +1,7 @@
+social_community_role.settings:
+  type: config_object
+  label: 'Social Community Role Settings'
+  mapping:
+    role:
+      type: string
+      label: 'Assigned Role'

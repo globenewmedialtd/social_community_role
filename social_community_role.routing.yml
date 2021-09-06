@@ -1,0 +1,9 @@
+social_community_role.settings:
+  path: '/admin/config/opensocial/social-community-role'
+  defaults:
+    _form: '\Drupal\social_community_role\Form\SocialCommunityRoleSettingsForm'
+    _title: 'Social Community Role settings'
+  requirements:
+    _permission: 'administer social_community_role settings'
+  options:
+    _admin_route: TRUE

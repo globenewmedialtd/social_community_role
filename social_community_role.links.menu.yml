@@ -1,0 +1,5 @@
+social_community_role.admin.config.social.social_community_role.settings:
+  title: 'Social Community Role settings'
+  description: 'Settings for Social Community Role module.'
+  route_name: social_community_role.settings
+  parent: social_core.admin.config.social

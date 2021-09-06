@@ -1,0 +1,160 @@
+<?php
+
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\group\Entity\Group;
+use Drupal\node\Entity\Node;
+
+/**
+ * Updates allowed values for group.field_flexible_group_visibility.
+ */
+function social_community_role_install() {
+
+  // Updates field storage config for field_custom_radio_buttons.
+  // @see https://www.drupal.org/node/2012896
+  // @see https://www.drupal.org/docs/8/api/update-api/updating-entities-and-fields-in-drupal-8#example-updating-a-field-from-an-obsolete-type-to-a-new-type
+  
+  // Update field_flexible_group_visibility
+  $old_config = FieldStorageConfig::loadByName('group', 'field_flexible_group_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  $allowed_values['community_role'] = 'Community Role';
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+  // Update field_group_allowed_visibility
+  $old_config = FieldStorageConfig::loadByName('group', 'field_group_allowed_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  $allowed_values['community_role'] = 'Community Role';
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+  // Update field_content_visibility
+  $old_config = FieldStorageConfig::loadByName('node', 'field_content_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  $allowed_values['community_role'] = 'Community Role';
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+
+
+}
+
+function social_community_role_uninstall() {
+  // field_flexible_group_visibility
+  $gids = \Drupal::entityQuery('group')
+    ->condition('field_flexible_group_visibility', 'community_role')
+    ->execute();
+  // Loads queried nodes.
+  // NOTE: If you have a non-trivial number of nodes to modify,
+  // you should use the Batch API to drive your update function instead.
+  // @see https://api.drupal.org/api/examples/batch_example%21batch_example.install/function/batch_example_update_8001/8.x-1.x
+  $groups = Group::loadMultiple($gids);
+  // Updates field_custom_radio_buttons values.
+  // Replaces any “green” values with “blue”.
+  $updated_value_map = [
+    'community_role' => 'community',
+  ];
+  /** @var \Drupal\node\Entity\Node $node */
+  foreach ($groups as $group) {
+    $group
+      ->set('field_flexible_group_visibility', $updated_value_map[$group->field_flexible_group_visibility->value])
+      ->save();
+  }
+
+  // field_group_allowed_visibility
+  $gids = \Drupal::entityQuery('group')
+    ->condition('field_group_allowed_visibility', 'community_role')
+    ->execute();
+  // Loads queried nodes.
+  // NOTE: If you have a non-trivial number of nodes to modify,
+  // you should use the Batch API to drive your update function instead.
+  // @see https://api.drupal.org/api/examples/batch_example%21batch_example.install/function/batch_example_update_8001/8.x-1.x
+  $groups = Group::loadMultiple($gids);
+  // Updates field_custom_radio_buttons values.
+  // Replaces any “green” values with “blue”.
+  $updated_value_map = [
+    'community_role' => 'community',
+  ];
+  /** @var \Drupal\node\Entity\Node $node */
+  foreach ($groups as $group) {
+    $group
+      ->set('field_group_allowed_visibility', $updated_value_map[$group->field_group_allowed_visibility->value])
+      ->save();
+  }
+
+
+  $nids = \Drupal::entityQuery('node')
+    ->condition('field_content_visibility', 'community_role')
+    ->execute();
+  // Loads queried nodes.
+  // NOTE: If you have a non-trivial number of nodes to modify,
+  // you should use the Batch API to drive your update function instead.
+  // @see https://api.drupal.org/api/examples/batch_example%21batch_example.install/function/batch_example_update_8001/8.x-1.x
+  $nodes = Node::loadMultiple($nids);
+  // Updates field_custom_radio_buttons values.
+  // Replaces any “green” values with “blue”.
+  $updated_value_map = [
+    'community_role' => 'community',
+  ];
+  /** @var \Drupal\node\Entity\Node $node */
+  foreach ($nodes as $node) {
+    $node
+      ->set('field_content_visibility', $updated_value_map[$node->field_content_visibility->value])
+      ->save();
+  }
+
+
+  // Update field_flexible_group_visibility
+  $old_config = FieldStorageConfig::loadByName('group', 'field_flexible_group_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  if(isset($allowed_values['community_role'])) {
+    unset($allowed_values['community_role']);
+  }
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+  // Update field_group_allowed_visibility
+  $old_config = FieldStorageConfig::loadByName('group', 'field_group_allowed_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  if(isset($allowed_values['community_role'])) {
+    unset($allowed_values['community_role']);
+  }
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+  // Update field_content_visibility
+  $old_config = FieldStorageConfig::loadByName('node', 'field_content_visibility');
+  $new_config = $old_config->createDuplicate();
+  $new_config->original = $new_config;
+  $new_config->enforceIsNew(FALSE);
+  $allowed_values = $new_config->getSetting('allowed_values');
+  if(isset($allowed_values['community_role'])) {
+    unset($allowed_values['community_role']);
+  }
+  $new_config
+    ->setSetting('allowed_values', $allowed_values)
+    ->save();
+
+
+
+
+}

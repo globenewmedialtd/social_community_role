@@ -30,17 +30,21 @@ use Drupal\Core\Entity\EntityForm;
 function social_community_role_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'form_alter') {
 
-    // Move my_module_form_alter() to the end of the list.
-    // \Drupal::moduleHandler()->getImplementations()
-    // iterates through $implementations with a foreach loop which PHP iterates
-    // in the order that the items were added, so to move an item to the end of
-    // the array, we remove it and then add it.
-    $group = $implementations['social_community_role'];
+    if (\Drupal::moduleHandler()->moduleExists('social_flex')) {
+      // We have to disable the hook in social flex
+      unset($implementations['social_flex']);
+    }
+    else {
+      // We have to disable the hook in social_group_flexible_group
+      unset($implementations['social_group_flexible_group']);
+    }      
+    $group = $implementations['social_community_role'];      
     unset($implementations['social_community_role']);
     $implementations['social_community_role'] = $group;
-  }
+  }  
 }
 */
+
 /**
  * Provide a description for a given key from the content visibility #options.
  *

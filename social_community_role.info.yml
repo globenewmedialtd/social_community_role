@@ -4,4 +4,4 @@ description: 'Extends group and content visibility'
 core: 8.x
 package: 'Social'
 dependencies:
-  - social:social_group
+  - social_flex
